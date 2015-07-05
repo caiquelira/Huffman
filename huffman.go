@@ -1,10 +1,12 @@
 package huffman
 
-import ("tree"
+import ("github.com/caiquelira/huffman/tree"
+		"github.com/caiquelira/huffman/bitreader"
+		"github.com/caiquelira/huffman/bitwriter"
 		"os")
 
 //Método para escrever a arvore recursivamente
-func writeTree(node *tree.Node, writer *BitWriter) {
+func writeTree(node *tree.Node, writer *bitwriter.BitWriter) {
 	if  node.isLeaf() { // folha
 		writer.WriteBit(true)
 		writer.WriteByte(([]byte(node.value))[0])
@@ -17,7 +19,7 @@ func writeTree(node *tree.Node, writer *BitWriter) {
 
 // Método para criar um dicionario para o caracter e seu codigo gerado pelo algoritimo de Huffman
 
-func createDict(node *tree.Node, dict *map[string]string, code string) {
+func createDict(node *tree.Node, dict map[string]string, code string) {
 	if node.isLeaf() {
 		dict[node.value] = code
 	} else {
@@ -28,16 +30,23 @@ func createDict(node *tree.Node, dict *map[string]string, code string) {
 
 // Método para escrever o arquivo na forma codificada
 
-func writeCodified(file os.File, dict *map[string]string, writer *BitWriter){
+func writeCodified(file os.File, dict map[string]string, writer *bitwriter.BitWriter){
+	//Loop para ler um caracter e escreve-lo no arquivo de saida em forma codificada
 	for {
 		b := file.Read(make([]byte, 1))
-		//To-do: Escrever bit a bit da string que so tem 0s e 1s
-		for {
+		//Transformar o caracter lido no código feito pelo dicionário
+		codeb := dict[string(b)]
+		//Temos que escrever bit a bit.
+		for i := 0; i < len(codeb); i++ {
+			if codeb[i] == "1"{
+				writer.WriteBit(true)
+			} else {
+				writer.WriteBit(false)
+			}
 
 		}
-		writer.WriteBit(dict[string(b)])
 	}
-
+	writer.Close()
 }
 
 //Recebe um arquivo de texto e cria um arquivo comprimido
@@ -46,23 +55,22 @@ func Compress(file os.File, outputName string) {
 	root := harverst(getMap(os.File))
 
 	// gerar dicionario
-	dict := createDict(root, &make(map[string]string), "")
+	dict := make(map[string]string)
+	createDict(root, dict, "")
 
 	//Resetar cursor
 	file.Seek(0, 0)
 	//Escrever Árvore
-	writer = BitWriter.New()
+	writer = bitwriter.New()
 	writeTree(root, writer)
 
 	// Codificar
 
-
-
-	return output
+	writeCodified(file, dict, writer)
 }
 
 //Método para ler a arvore recursivamente
-func readTree(reader *BitReader) *tree.Node{
+func readTree(reader *bitreader.BitReader) *tree.Node{
 	if reader.ReadBit() { // folha
 		return tree.Node.New(string(reader.ReadByte()), nil, nil)
 	} else { // tem dois filhos
@@ -72,15 +80,7 @@ func readTree(reader *BitReader) *tree.Node{
 	}
 }
 
-//Recebe um arquivo comprimido (objeto) e retorna o arquivo original (objeto)
-func Decompress(file os.File, outputName string) os.File{
-	// Ler Árvore (Reconstruir)
-	reader = BitReader.New(os.File)
-	root := readTree(reader)
-	if root == nil {
-		panic("Árvore nula!")
-	}
-	// Decodificar percorrendo a arvore
+func decodeFile(reader *bitreader.BitReader, outputName string, root *tree.Node) os.File {
 	output := os.Create(outputName)
 	node := root
 	for {
@@ -101,7 +101,19 @@ func Decompress(file os.File, outputName string) os.File{
 			node := root
 		}
 	}
-
 	return output
+
+}
+//Recebe um arquivo comprimido (objeto) e retorna o arquivo original (objeto)
+func Decompress(file os.File, outputName string) os.File{
+	// Ler Árvore (Reconstruir)
+	reader = bitreader.New(os.File)
+	root := readTree(reader)
+	if root == nil {
+		panic("Árvore nula!")
+	}
+	// Decodificar percorrendo a arvore
+
+	return decodeFile(reader, outputName, root)
 }
 
