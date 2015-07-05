@@ -1,7 +1,7 @@
-package bitwriter
+package bit
 
 
-import "os"
+import "io"
 
 func check(e error) {
 	if e != nil {
@@ -9,21 +9,21 @@ func check(e error) {
 	}
 }
 
-type BitWriter struct {
+type Writer struct {
 	f *os.File
 	r int
 	bits int
 }
 
-func NewBitWriter (file *os.File)(*BitWriter){
-	bw := new(BitWriter)
+func New (file *io.Writer)(*Writer){
+	bw := new(Writer)
 	bw.f = file
 	bw.r = 0
 	bw.bits = 0
 	return bw
 }
 
-func (bw *BitWriter) WriteBit (b bool) {
+func (bw *Writer) Write (b bool) {
 	bw.bits <<= 1
 	if (b) {
 		bw.bits++
@@ -39,23 +39,23 @@ func (bw *BitWriter) WriteBit (b bool) {
 	}
 }
 
-func (bw *BitWriter) WriteByte (b byte) {
+func (bw *Writer) WriteByte (b byte) {
 	for i := 0; i < 8; i++ {
-		bw.WriteBit(bool ((b & 1) == 1))
+		bw.Write(bool ((b & 1) == 1))
 		b >>= 1
 	}
 }
 
-func (br *BitWriter) Close (){
+func (bw *Writer) Close (){
 	if bw.r == 0 {
 		aux := make([]byte, 1)
 		aux[0] = byte(0)
 		_,err := bw.f.Write(aux)
 		check (err)
 	} else {
-		r := 8 - br.r
+		r := 8 - bw.r
 		for i := 0; i < r; i++ {
-			bw.WriteBit(false)
+			bw.Write(false)
 		}
 		aux := make([]byte, 1)
 		aux[0] = byte(r)
