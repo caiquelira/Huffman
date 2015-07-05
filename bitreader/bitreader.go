@@ -15,7 +15,7 @@ func check(e error) {
 	}
 }
 
-type BitReader struct {
+type bitReader struct {
 	f *os.File
 	max int64
 	pos int64
@@ -23,8 +23,8 @@ type BitReader struct {
 	r int
 }
 
-func (br *BitReader) New (file *os.File)*BitReader{
-	br = new(BitReader)
+func (br *bitReader) New (file *os.File)*bitReader{
+	br = new(bitReader)
 	br.f = file
 	br.pos = 0
 	br.bits = make([]bool, 8)
@@ -39,7 +39,7 @@ func (br *BitReader) New (file *os.File)*BitReader{
 	return br
 }
 
-func (br *BitReader) ReadBit ()(b bool, e error) {
+func (br *bitReader) ReadBit ()(b bool, e error) {
 	e = nil
 	b = false
 	if br.pos == br.max {
@@ -68,7 +68,7 @@ func (br *BitReader) ReadBit ()(b bool, e error) {
 	return
 }
 
-func (br *BitReader) ReadByte ()(b byte, e error) {
+func (br *bitReader) ReadByte ()(b byte, e error) {
 	e = nil
 	b = 0
 	for i := 0; i < 8; i++ {
