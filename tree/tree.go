@@ -7,12 +7,12 @@ type Node struct {
 	right *Node
 }
 
-func (n *Node) New(v string, l *Node, r *Node) *Node{
-	var res *Node
-	res.left = l
-	res.right = r
-	res.value = v
-	return res
+func New(v string, l *Node, r *Node) *Node{
+	node := new(Node)
+	node.left = l
+	node.right = r
+	node.value = v
+	return node
 }
 
 // Método que informa se um nó é uma folha
