@@ -1,4 +1,4 @@
-package BitWriter
+package bit
 
 
 import "io"
