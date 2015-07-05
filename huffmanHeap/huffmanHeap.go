@@ -2,7 +2,7 @@ package huffmanHeap
 
 import(
   "container/heap"
-  "tree"
+  "github.com/caiquelira/huffman/tree"
 )
 
 type Item struct {
@@ -13,6 +13,13 @@ type Item struct {
   index int
 }
 
+func (i Item) Node() tree.Node{ return i.node }
+func (i Item) Frequency() int{ return i.frequency }
+
+
+// Vamos fazer uma fila de prioridade para pegar os elementos a serem adicionados na arvore
+type huffmanHeap []*Item
+
 // "Construtor" da huffmanHeap
 func New(map[string]int) huffmanHeap{
   hh := make(huffmanHeap, 0)
@@ -20,18 +27,15 @@ func New(map[string]int) huffmanHeap{
 
   //
   for value, frequency := range freqMap {
-    item = &huffmanHeap.Item {
-           node: tree
-           frequency := frequency
+    item = &Item {
+           node: tree,
+           frequency: frequency,
     }
     heap.Push(&hh, item)
   }
 
   return hh
 }
-
-// Vamos fazer uma fila de prioridade para pegar os elementos a serem adicionados na arvore
-type huffmanHeap []*Item
 
 func (hh huffmanHeap) Len() int {
   return len(hh)
@@ -57,7 +61,7 @@ func (hh *huffmanHeap) Push(x interface{}) {
   *hh = append(*hh, item)
 }
 
-// Retorna o elemento com a maior prioridade ( primeiro da fila do Less())
+// Retorna a arvore do elemento com a maior prioridade ( primeiro da fila do Less())
 func (hh *huffmanHeap) Pop() interface{} {
   old := *hh
   n := len(old)
