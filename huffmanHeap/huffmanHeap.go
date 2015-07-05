@@ -13,7 +13,7 @@ type Item struct {
   index int
 }
 
-func (i Item) Node() tree.Node{ return i.node }
+func (i Item) Node() *tree.Node{ return i.node }
 func (i Item) Frequency() int{ return i.frequency }
 
 
@@ -21,14 +21,14 @@ func (i Item) Frequency() int{ return i.frequency }
 type huffmanHeap []*Item
 
 // "Construtor" da huffmanHeap
-func New(map[string]int) huffmanHeap{
+func New(freqMap map[string]int) huffmanHeap{
   hh := make(huffmanHeap, 0)
   heap.Init(&hh)
 
   //
   for value, frequency := range freqMap {
-    item = &Item {
-           node: tree,
+    item := &Item {
+           node: tree.New(value, nil, nil),
            frequency: frequency,
     }
     heap.Push(&hh, item)
