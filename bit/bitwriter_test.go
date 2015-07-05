@@ -1,4 +1,4 @@
-package bitwriter
+package bit
 
 import "strings"
 
