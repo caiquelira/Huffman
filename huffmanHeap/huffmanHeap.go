@@ -1,6 +1,7 @@
-package PriorityQueue
+package huffmanHeap
 
 import(
+  "container/heap"
   "tree"
 )
 
@@ -12,39 +13,56 @@ type Item struct {
   index int
 }
 
-// Vamos fazer uma fila de prioridade para pegar os elementos a serem adicionados na arvore
-type PriorityQueue []*Item
+// "Construtor" da huffmanHeap
+func New(map[string]int) huffmanHeap{
+  hh := make(huffmanHeap, 0)
+  heap.Init(&hh)
 
-func (pq PriorityQueue) Len() int {
-  return len(pq)
+  //
+  for value, frequency := range freqMap {
+    item = &huffmanHeap.Item {
+           node: tree
+           frequency := frequency
+    }
+    heap.Push(&hh, item)
+  }
+
+  return hh
 }
 
-func (pq PriorityQueue) Less(i, j int) bool {
+// Vamos fazer uma fila de prioridade para pegar os elementos a serem adicionados na arvore
+type huffmanHeap []*Item
+
+func (hh huffmanHeap) Len() int {
+  return len(hh)
+}
+
+func (hh huffmanHeap) Less(i, j int) bool {
   // Queremos que pop retorne o elemento de maior prioridade
-  return pq[i].frequency > pq[j].frequency
+  return hh[i].frequency > hh[j].frequency
 }
 
 // Nome auto explicativo, do ingles trocar
-func (pq PriorityQueue) Swap(i, j int) {
-  pq[i], pq[j] = pq[j], pq[i]
-  pq[i].index = i
-  pq[j].index = j
+func (hh huffmanHeap) Swap(i, j int) {
+  hh[i], hh[j] = hh[j], hh[i]
+  hh[i].index = i
+  hh[j].index = j
 }
 
 // Para implementarmos a interface heap temos que ter Push() e Pop(), com os parametros como os abaixo
-func (pq *PriorityQueue) Push(x interface{}) {
-  n := len(*pq)
+func (hh *huffmanHeap) Push(x interface{}) {
+  n := len(*hh)
   item := x.(*Item)
   item.index = n
-  *pq = append(*pq, item)
+  *hh = append(*hh, item)
 }
 
 // Retorna o elemento com a maior prioridade ( primeiro da fila do Less())
-func (pq *PriorityQueue) Pop() interface{} {
-  old := *pq
+func (hh *huffmanHeap) Pop() interface{} {
+  old := *hh
   n := len(old)
   item := old[n-1]
   item.index = -1 // Para nao acessarmos nada existente
-  *pq = old[0 : n-1]
+  *hh = old[0 : n-1]
   return item
 }
