@@ -1,10 +1,10 @@
-package huffman
+package priorityQueue
 
 import(
   "tree"
 )
 
-type item struct {
+type Item struct {
   node *tree.Node // Cada elemento da arvore
   frequency int // Quantas vezes o char apareceu no texto
 
@@ -13,7 +13,7 @@ type item struct {
 }
 
 // Vamos fazer uma fila de prioridade para pegar os elementos a serem adicionados na arvore
-type priorityQueue []*item
+type PriorityQueue []*item
 
 func (pq priorityQueue) Len() int {
   return len(pq)
