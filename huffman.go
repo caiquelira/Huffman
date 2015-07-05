@@ -1,12 +1,11 @@
 package huffman
 
 import ("github.com/caiquelira/huffman/tree"
-		"github.com/caiquelira/huffman/bitreader"
-		"github.com/caiquelira/huffman/bitwriter"
+		"github.com/caiquelira/huffman/bit"
 		"os")
 
 //Método para escrever a arvore recursivamente
-func writeTree(node *tree.Node, writer *bitwriter.BitWriter) {
+func writeTree(node *tree.Node, writer *bit.Writer) {
 	if  node.isLeaf() { // folha
 		writer.WriteBit(true)
 		writer.WriteByte(([]byte(node.value))[0])
@@ -30,7 +29,7 @@ func createDict(node *tree.Node, dict map[string]string, code string) {
 
 // Método para escrever o arquivo na forma codificada
 
-func writeCodified(file os.File, dict map[string]string, writer *bitwriter.BitWriter){
+func writeCodified(file os.File, dict map[string]string, writer *bit.Writer){
 	//Loop para ler um caracter e escreve-lo no arquivo de saida em forma codificada
 	for {
 		b := file.Read(make([]byte, 1))
@@ -61,7 +60,7 @@ func Compress(file os.File, outputName string) {
 	//Resetar cursor
 	file.Seek(0, 0)
 	//Escrever Árvore
-	writer = bitwriter.New()
+	writer = bit.NewWriter()
 	writeTree(root, writer)
 
 	// Codificar
@@ -70,7 +69,7 @@ func Compress(file os.File, outputName string) {
 }
 
 //Método para ler a arvore recursivamente
-func readTree(reader *bitreader.BitReader) *tree.Node{
+func readTree(reader *bit.Reader) *tree.Node{
 	if reader.ReadBit() { // folha
 		return tree.Node.New(string(reader.ReadByte()), nil, nil)
 	} else { // tem dois filhos
@@ -80,7 +79,7 @@ func readTree(reader *bitreader.BitReader) *tree.Node{
 	}
 }
 
-func decodeFile(reader *bitreader.BitReader, outputName string, root *tree.Node) os.File {
+func decodeFile(reader *bit.Reader, outputName string, root *tree.Node) os.File {
 	output := os.Create(outputName)
 	node := root
 	for {
@@ -107,7 +106,7 @@ func decodeFile(reader *bitreader.BitReader, outputName string, root *tree.Node)
 //Recebe um arquivo comprimido (objeto) e retorna o arquivo original (objeto)
 func Decompress(file os.File, outputName string) os.File{
 	// Ler Árvore (Reconstruir)
-	reader = bitreader.New(os.File)
+	reader = bit.NewReader(os.File)
 	root := readTree(reader)
 	if root == nil {
 		panic("Árvore nula!")
