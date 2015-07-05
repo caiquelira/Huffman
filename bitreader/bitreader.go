@@ -3,6 +3,7 @@ package huffman
 
 import (
 	"os"
+	"errors"
 	//"bufio"
 	//"io"
 	//"fmt"
@@ -22,7 +23,8 @@ type BitReader struct {
 	r int
 }
 
-func (br *BitReader) New (file *os.File){
+func (br *BitReader) New (file *os.File)*BitReader{
+	br = new(BitReader)
 	br.f = file
 	br.pos = 0
 	br.bits = make([]bool, 8)
@@ -34,6 +36,7 @@ func (br *BitReader) New (file *os.File){
 	aux,err := file.Stat()
 	check(err)
 	br.max = aux.Size()*8 - int64(b[0]) - 8
+	return br
 }
 
 func (br *BitReader) ReadBit ()(b bool, e error) {
@@ -52,12 +55,12 @@ func (br *BitReader) ReadBit ()(b bool, e error) {
 	aux := make([]byte, 1)
 	_,err := br.f.Read(aux)
 	check(err)
-	for i = 0; i < 8; i++ {
+	for i := 0; i < 8; i++ {
 		br.bits[i] = bool ((aux[0] & 1) == 1)
 		aux[0] >>= 1
 	}
-	for i = 0; 7 - i > i; i++ {
-		br.bits[i], br.bits[7 - i] := br.bits[7 - i], br.bits[i]
+	for i := 0; 7 - i > i; i++ {
+		br.bits[i], br.bits[7 - i] = br.bits[7 - i], br.bits[i]
 	}
 	br.r = 8
 	br.r--
@@ -68,7 +71,7 @@ func (br *BitReader) ReadBit ()(b bool, e error) {
 func (br *BitReader) ReadByte ()(b byte, e error) {
 	e = nil
 	b = 0
-	for int i = 0; i < 8; i++ {
+	for i := 0; i < 8; i++ {
 		var aux bool
 		aux,e = br.ReadBit()
 		b <<= 1
