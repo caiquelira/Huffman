@@ -1,4 +1,4 @@
-package bitWriter
+package BitWriter
 
 
 import "io"
@@ -9,21 +9,21 @@ func check(e error) {
 	}
 }
 
-type bitWriter struct {
+type Writer struct {
 	f *os.File
 	r int
 	bits int
 }
 
-func New (file *io.Writer)(*bitWriter){
-	bw := new(bitWriter)
+func New (file *io.Writer)(*Writer){
+	bw := new(Writer)
 	bw.f = file
 	bw.r = 0
 	bw.bits = 0
 	return bw
 }
 
-func (bw *bitWriter) WriteBit (b bool) {
+func (bw *Writer) Write (b bool) {
 	bw.bits <<= 1
 	if (b) {
 		bw.bits++
@@ -39,14 +39,14 @@ func (bw *bitWriter) WriteBit (b bool) {
 	}
 }
 
-func (bw *bitWriter) WriteByte (b byte) {
+func (bw *Writer) WriteByte (b byte) {
 	for i := 0; i < 8; i++ {
-		bw.WriteBit(bool ((b & 1) == 1))
+		bw.Write(bool ((b & 1) == 1))
 		b >>= 1
 	}
 }
 
-func (bw *bitWriter) Close (){
+func (bw *Writer) Close (){
 	if bw.r == 0 {
 		aux := make([]byte, 1)
 		aux[0] = byte(0)
@@ -55,7 +55,7 @@ func (bw *bitWriter) Close (){
 	} else {
 		r := 8 - bw.r
 		for i := 0; i < r; i++ {
-			bw.WriteBit(false)
+			bw.Write(false)
 		}
 		aux := make([]byte, 1)
 		aux[0] = byte(r)

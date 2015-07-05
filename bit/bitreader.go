@@ -1,11 +1,10 @@
-package huffman
+package bit
 
 
 import (
-	"os"
+	"io"
 	"errors"
 	//"bufio"
-	//"io"
 	//"fmt"
 )
 
@@ -15,7 +14,7 @@ func check(e error) {
 	}
 }
 
-type bitReader struct {
+type Reader struct {
 	f *os.File
 	max int64
 	pos int64
@@ -23,8 +22,8 @@ type bitReader struct {
 	r int
 }
 
-func (br *bitReader) New (file *os.File)*bitReader{
-	br = new(bitReader)
+func (br *Reader) New (file *io.Reader)*Reader{
+	br = new(Reader)
 	br.f = file
 	br.pos = 0
 	br.bits = make([]bool, 8)
@@ -39,7 +38,7 @@ func (br *bitReader) New (file *os.File)*bitReader{
 	return br
 }
 
-func (br *bitReader) ReadBit ()(b bool, e error) {
+func (br *Reader) Read ()(b bool, e error) {
 	e = nil
 	b = false
 	if br.pos == br.max {
@@ -68,12 +67,12 @@ func (br *bitReader) ReadBit ()(b bool, e error) {
 	return
 }
 
-func (br *bitReader) ReadByte ()(b byte, e error) {
+func (br *Reader) ReadByte ()(b byte, e error) {
 	e = nil
 	b = 0
 	for i := 0; i < 8; i++ {
 		var aux bool
-		aux,e = br.ReadBit()
+		aux,e = br.Read()
 		b <<= 1
 		if aux {
 			b++
