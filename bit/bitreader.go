@@ -16,8 +16,8 @@ type Reader struct {
 	r int
 }
 
-func (br *Reader) NewReader (file *os.File)*Reader{
-	br = new(Reader)
+func NewReader (file *os.File)*Reader{
+	br := new(Reader)
 	br.f = file
 	br.pos = 0
 	br.bits = make([]bool, 8)
