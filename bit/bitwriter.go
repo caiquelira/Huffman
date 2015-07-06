@@ -1,7 +1,10 @@
 package bit
 
 
-import "os"
+import (
+	"os"
+	"io"
+)
 
 func check(e error) {
 	if e != nil {
@@ -9,29 +12,32 @@ func check(e error) {
 	}
 }
 
-type Writer struct {
-	f *os.File
+type writer struct {
+	f *io.Writer
 	r int
 	bits int
 }
 
-func newWriter(file *os.File)(*Writer){
-	bw := new(Writer)
+type Writer struct {
+	f *os.File
+	b writer
+}
+
+func newWriter(file *io.Writer)(*writer){
+	bw := new(writer)
 	bw.f = file
 	bw.r = 0
 	bw.bits = 0
 	return bw
 }
 
-func NewWriter (file *os.File)(*Writer){
+func NewWriter(file *os.File)(*Writer){
 	bw := new(Writer)
-	bw.f = file
-	bw.r = 0
-	bw.bits = 0
+	bw.b = newWriter(file)
 	return bw
 }
 
-func (bw *Writer) Write (b bool) {
+func (bw *Writer) Write(b bool) {
 	bw.bits <<= 1
 	if (b) {
 		bw.bits++
