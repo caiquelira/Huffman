@@ -13,17 +13,17 @@ func check(e error) {
 }
 
 type writer struct {
-	f *io.Writer
+	f io.Writer
 	r int
 	bits int
 }
 
 type Writer struct {
 	f *os.File
-	b writer
+	b *writer
 }
 
-func newWriter(file *io.Writer)(*writer){
+func newWriter(file io.Writer)(*writer){
 	bw := new(writer)
 	bw.f = file
 	bw.r = 0
@@ -37,9 +37,9 @@ func NewWriter(file *os.File)(*Writer){
 	return bw
 }
 
-func (bw *Writer) Write(b bool) {
+func (bw *writer) write(in bool) {
 	bw.bits <<= 1
-	if (b) {
+	if (in) {
 		bw.bits++
 	}
 	bw.r++
@@ -53,6 +53,10 @@ func (bw *Writer) Write(b bool) {
 	}
 }
 
+func (bw *Writer) Write(in bool) {
+	bw.b.write(in)
+}
+
 func (bw *Writer) WriteByte (b byte) {
 	for i := 0; i < 8; i++ {
 		bw.Write(bool ((b & 1) == 1))
@@ -60,7 +64,7 @@ func (bw *Writer) WriteByte (b byte) {
 	}
 }
 
-func (bw *Writer) Close (){
+func (bw *writer) close (){
 	if bw.r == 0 {
 		aux := make([]byte, 1)
 		aux[0] = byte(0)
@@ -69,11 +73,15 @@ func (bw *Writer) Close (){
 	} else {
 		r := 8 - bw.r
 		for i := 0; i < r; i++ {
-			bw.Write(false)
+			bw.write(false)
 		}
 		aux := make([]byte, 1)
 		aux[0] = byte(r)
 		_,err := bw.f.Write(aux)
 		check (err)
 	}
+}
+
+func (bw *Writer) Close(){
+	bw.b.close()
 }
