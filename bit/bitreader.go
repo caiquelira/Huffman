@@ -38,6 +38,7 @@ func NewReader(file *os.File)*Reader{
 	file.Seek(-1, 2)
 	b := make([]byte, 1)
 	_,err := file.Read(b)
+	file.Seek(0,0)
 	check (err)
 	aux,err := file.Stat()
 	check(err)
@@ -65,9 +66,6 @@ func (br *reader) read()(b bool, e error) {
 		br.bits[i] = bool ((aux[0] & 1) == 1)
 		aux[0] >>= 1
 	}
-	for i := 0; 7 - i > i; i++ {
-		br.bits[i], br.bits[7 - i] = br.bits[7 - i], br.bits[i]
-	}
 	br.r = 8
 	br.r--
 	b = br.bits[br.r]
@@ -78,7 +76,8 @@ func (br *Reader) Read()(b bool, e error) {
 	return br.b.read()
 }
 
-func (br *Reader) ReadByte ()(b byte, e error) {
+
+func (br *Reader) ReadByte()(b byte, e error) {
 	e = nil
 	b = 0
 	for i := 0; i < 8; i++ {

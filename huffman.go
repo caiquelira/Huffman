@@ -3,7 +3,7 @@ package huffman
 import ("github.com/caiquelira/huffman/tree"
 		"github.com/caiquelira/huffman/bit"
 		"os"
-		"fmt")
+		"io")
 
 //Método para escrever a arvore recursivamente
 func writeNode(node *tree.Node, writer *bit.Writer) {
@@ -24,7 +24,7 @@ func createDict(node *tree.Node, dict map[string]string, code string) {
 		dict[node.Value] = code
 	} else {
 		createDict(node.Left, dict, code+"0")
-		createDict(node.Left, dict, code+"1")
+		createDict(node.Right, dict, code+"1")
 	}
 }
 
@@ -33,7 +33,11 @@ func createDict(node *tree.Node, dict map[string]string, code string) {
 func writeCodified(file *os.File, dict map[string]string, writer *bit.Writer){
 	//Loop para ler um caracter e escreve-lo no arquivo de saida em forma codificada
 	for {
-		b, _ := file.Read(make([]byte, 1))
+		b := make([]byte, 1)
+		_, err := file.Read(b)
+		if err == io.EOF {
+			break
+		}
 		//Transformar o caracter lido no código feito pelo dicionário
 		codeb := dict[string(b)]
 		//Temos que escrever bit a bit.
@@ -43,7 +47,6 @@ func writeCodified(file *os.File, dict map[string]string, writer *bit.Writer){
 			} else {
 				writer.Write(false)
 			}
-
 		}
 	}
 	writer.Close()
@@ -56,7 +59,12 @@ func Compress(file *os.File, outputName string) {
 
 	// gerar dicionario
 	dict := make(map[string]string)
-	createDict(root, dict, "")
+
+	if root.IsLeaf() {
+		dict[root.Value] = "0"	
+	} else {
+		createDict(root, dict, "")
+	}
 
 	//Resetar cursor
 	file.Seek(0, 0)
@@ -70,12 +78,23 @@ func Compress(file *os.File, outputName string) {
 	writeCodified(file, dict, writer)
 }
 
+//helper
+func reverseBits(b byte) byte {
+	var d byte
+	for i:= 0; i < 8; i++ {
+		d <<= 1
+		d |= b & 1
+		b >>= 1
+	}
+	return d
+}
+
 //Método para ler a arvore recursivamente
 func readTree(reader *bit.Reader) *tree.Node{
 	read, _ := reader.Read()
 	if read { // folha
 		char, _ := reader.ReadByte()
-		charstring := string(char)
+		charstring := string(reverseBits(char))
 		return tree.New(charstring, nil, nil)
 	} else { // tem dois filhos
 		leftChild := readTree(reader)
@@ -117,7 +136,11 @@ func Decompress(file *os.File, outputName string){
 		panic("Árvore nula!")
 	}
 	// Decodificar percorrendo a arvore
-
+	if root.IsLeaf() {
+		nodeHelper := tree.New("", nil, nil)
+		nodeHelper.Left = root
+		root = nodeHelper
+	}
 	decodeFile(reader, outputName, root)
 }
 
