@@ -3,7 +3,8 @@ package huffman
 import ("github.com/caiquelira/huffman/tree"
 		"github.com/caiquelira/huffman/bit"
 		"os"
-		"io")
+		"io"
+		"fmt")
 
 //Método para escrever a arvore recursivamente
 func writeNode(node *tree.Node, writer *bit.Writer) {
@@ -104,6 +105,7 @@ func decodeFile(reader *bit.Reader, outputName string, root *tree.Node) {
 
 		//Checar se chegamos em uma folha
 		if node.IsLeaf() {
+			fmt.Printf("w %s\n", node.Value)
 			output.WriteString(node.Value)
 			node = root
 		}
