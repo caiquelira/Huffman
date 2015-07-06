@@ -59,7 +59,12 @@ func Compress(file *os.File, outputName string) {
 
 	// gerar dicionario
 	dict := make(map[string]string)
-	createDict(root, dict, "")
+
+	if root.IsLeaf() {
+		dict[root.Value] = "0"	
+	} else {
+		createDict(root, dict, "")
+	}
 
 	//Resetar cursor
 	file.Seek(0, 0)
@@ -131,7 +136,11 @@ func Decompress(file *os.File, outputName string){
 		panic("Árvore nula!")
 	}
 	// Decodificar percorrendo a arvore
-
+	if root.IsLeaf() {
+		nodeHelper := tree.New("", nil, nil)
+		nodeHelper.Left = root
+		root = nodeHelper
+	}
 	decodeFile(reader, outputName, root)
 }
 
