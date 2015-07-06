@@ -2,17 +2,11 @@ package bit
 
 
 import (
-	"io"
+	"os"
 	"errors"
 	//"bufio"
 	//"fmt"
 )
-
-func check(e error) {
-	if e != nil {
-		panic (e)
-	}
-}
 
 type Reader struct {
 	f *os.File
@@ -22,7 +16,7 @@ type Reader struct {
 	r int
 }
 
-func (br *Reader) New (file *io.Reader)*Reader{
+func (br *Reader) NewReader (file *os.File)*Reader{
 	br = new(Reader)
 	br.f = file
 	br.pos = 0
