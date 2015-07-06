@@ -51,7 +51,7 @@ func writeCodified(file os.File, dict map[string]string, writer *bit.Writer){
 //Recebe um arquivo de texto e cria um arquivo comprimido
 func Compress(file os.File, outputName string) {
 	// gerar a arvore a partir da frequencia dos caracteres do texto
-	root := Harverst(GetMap(file))
+	root := Harvest(GetMap(file, 1))
 
 	// gerar dicionario
 	dict := make(map[string]string)
