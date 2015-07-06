@@ -13,7 +13,7 @@ func TestFrequency(t *testing.T) {
 	}
 
 	reader := strings.NewReader(testString)
-	freqMap := GetMap(reader, 1)
+	freqMap := GetMap(reader)
 
   eq := reflect.DeepEqual(freqMap, expectedMap)
   if !eq {
