@@ -27,19 +27,19 @@ type pair struct{
 
 func (n *Node) String() (s string){
 	queue := []pair{ pair{depth: 0, node: n,} }
-
 	for len(queue) > 0 {
 		// Tiramos o primeiro elemento e atualizamos a fila
 		first := queue[0]
-		queue := queue[1:]
+		queue = queue[1:]
 
 		for i := 0;  i < first.depth; i++ {
 			s += "  "
 		}
 		s += "\"" + first.node.Value + "\"" + "\n"
 		if !first.node.IsLeaf(){
-			queue = append(queue, pair{depth: first.depth + 1, node: first.node.Left})
-			queue = append(queue, pair{depth: first.depth + 1, node: first.node.Right})
+			nxtDepth := (first.depth + 1)
+			queue = append(queue, pair{depth: nxtDepth, node: first.node.Left})
+			queue = append(queue, pair{depth: nxtDepth, node: first.node.Right})
 		}
 	}
 	return

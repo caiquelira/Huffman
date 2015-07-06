@@ -1,21 +1,22 @@
 package huffman
 
 import (
-	"fmt"
 	"strings"
+  "testing"
+  "reflect"
 )
 
-func ExampleFrequency() {
+func TestFrequency(t *testing.T) {
 	testString := "abbcccdddd"
-	reader := strings.NewReader(testString)
-	freqMap := getMap(reader, 1)
-	for k, v := range freqMap {
-		fmt.Println("%s:%s", k, v)
+  expectedMap := map[string]int{
+		"a": 1, "b": 2, "c": 3, "d": 4,
 	}
 
-	// Output:
-	// a:1
-	// b:2
-	// c:3
-	// d:4
+	reader := strings.NewReader(testString)
+	freqMap := GetMap(reader, 1)
+
+  eq := reflect.DeepEqual(freqMap, expectedMap)
+  if !eq {
+    t.Error(freqMap, "different than expected:", expectedMap)
+  }
 }
