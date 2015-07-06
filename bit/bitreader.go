@@ -38,6 +38,7 @@ func NewReader(file *os.File)*Reader{
 	file.Seek(-1, 2)
 	b := make([]byte, 1)
 	_,err := file.Read(b)
+	file.Seek(0,0)
 	check (err)
 	aux,err := file.Stat()
 	check(err)
