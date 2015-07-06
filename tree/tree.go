@@ -2,45 +2,44 @@ package tree
 
 // Definição do nó da árvore de Huffman
 type Node struct {
-	value string
-	left  *Node
-	right *Node
+	Value string
+	Left  *Node
+	Right *Node
 }
 
 func New(v string, l *Node, r *Node) *Node{
 	node := new(Node)
-	node.left = l
-	node.right = r
-	node.value = v
+	node.Left = l
+	node.Right = r
+	node.Value = v
 	return node
 }
 
 // Método que informa se um nó é uma folha
-func (n *Node) isLeaf() bool {
-	return n.left == nil && n.right == nil
+func (n *Node) IsLeaf() bool {
+	return n.Left == nil && n.Right == nil
+}
+
+type pair struct{
+	depth int
+	node *Node
 }
 
 func (n *Node) String() (s string){
-	var queueN []*Node{ n }
-	var queueD []*int{ 0 }
+	queue := []pair{ pair{depth: 0, node: n,} }
+
 	for len(queue) > 0 {
 		// Tiramos o primeiro elemento e atualizamos a fila
-		firstN := queueN[0]
-		queueN := queueN[1:]
+		first := queue[0]
+		queue := queue[1:]
 
-		firstD := queueD[0]
-		queueD := queueD[1:]
-
-		for i := 0;  i < firstD; i++ {
+		for i := 0;  i < first.depth; i++ {
 			s += "  "
 		}
-		s += "\"" + firstN.value + "\"" + "\n"
-		if !firstN.isLeaf(){
-			queueN.append(firstN.left)
-			queueN.append(firstN.right)
-
-			queueD.append(firstD + 1)
-			queueD.append(firstD + 1)
+		s += "\"" + first.node.Value + "\"" + "\n"
+		if !first.node.IsLeaf(){
+			queue = append(queue, pair{depth: first.depth + 1, node: first.node.Left})
+			queue = append(queue, pair{depth: first.depth + 1, node: first.node.Right})
 		}
 	}
 	return
