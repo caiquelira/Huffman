@@ -65,9 +65,6 @@ func (br *reader) read()(b bool, e error) {
 		br.bits[i] = bool ((aux[0] & 1) == 1)
 		aux[0] >>= 1
 	}
-	for i := 0; 7 - i > i; i++ {
-		br.bits[i], br.bits[7 - i] = br.bits[7 - i], br.bits[i]
-	}
 	br.r = 8
 	br.r--
 	b = br.bits[br.r]

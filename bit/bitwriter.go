@@ -65,12 +65,7 @@ func (bw *Writer) WriteByte (b byte) {
 }
 
 func (bw *writer) close (){
-	if bw.r == 0 {
-		aux := make([]byte, 1)
-		aux[0] = byte(0)
-		_,err := bw.f.Write(aux)
-		check (err)
-	} else {
+	if bw.r > 0 {
 		r := 8 - bw.r
 		for i := 0; i < r; i++ {
 			bw.write(false)
