@@ -7,4 +7,10 @@ func Example () {
 	writer := strings.NewWriter(ret)
 	bw := New(writer)
 	
+
+
+	var str string
+	str = "Leia essa string"
+	reader := strings.NewReader(str)
+	br := New(reader, str.size())
 }
