@@ -3,6 +3,7 @@ package huffman
 import (
 	"io"
 	"bufio"
+	//"fmt"
 )
 
 func GetMap(fi io.Reader) map[string]int{
@@ -13,7 +14,7 @@ func GetMap(fi io.Reader) map[string]int{
 	//
 	for {
 		// n eh o tamanho do array de bytes que o Reader retorna
-		r, n, err := file.ReadRune()
+		r, _, err := file.ReadRune()
 		if err != nil && err != io.EOF {
 			panic(err) // Se houver um erro diferente do arquivo ter acabado
 		}
@@ -26,6 +27,7 @@ func GetMap(fi io.Reader) map[string]int{
 		str := string(r)
 		// Aumenta a frequencia do elemento com o valor da string
 		// ou adiciona um novo key do Dicionario
+		//fmt.Println("Frequency of char:", str, "\trune:", r," \tbyte:", byte(r), "\tincreased.")
 		freqMap[str]++
 	}
 

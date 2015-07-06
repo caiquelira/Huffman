@@ -7,9 +7,9 @@ import (
 )
 
 func TestFrequency(t *testing.T) {
-	testString := "abbcccdddd"
+	testString := "abbcccddddé"
   expectedMap := map[string]int{
-		"a": 1, "b": 2, "c": 3, "d": 4,
+		"a": 1, "b": 2, "c": 3, "d": 4, "é": 1,
 	}
 
 	reader := strings.NewReader(testString)
