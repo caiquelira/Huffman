@@ -5,7 +5,7 @@ import(
   "fmt"
 )
 
-func Example() {
+func ExampleFrequency() {
   testString := "abbcccdddd"
   reader := strings.NewReader(testString)
   freqMap := getMap(reader, 1)
