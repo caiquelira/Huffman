@@ -15,7 +15,7 @@ func harvest(freqMap map[string]int) *tree.Node {
   for {
     // Caso a heap contenha um unico elemento retornamos ela
     if hh.Len() == 1 {
-      return hh.Pop().Node
+      return heap.Pop(&hh).(*huffmanHeap.Item).Node
     }
 
     // Caso contrario pegamos os dois elementos do topo
@@ -27,8 +27,8 @@ func harvest(freqMap map[string]int) *tree.Node {
 
     //E criamos uma "arvore" intermediaria com eles
     newItem := &huffmanHeap.Item{
-               Node: tree.New("", r.Node(), l.Node()),
-               Frequency: r.Frequency() + l.Frequency(),
+               Node: tree.New("", r.Node, l.Node),
+               Frequency: r.Frequency + l.Frequency,
     }
     // Adicionando em seguida ao
     heap.Push(&hh, newItem)

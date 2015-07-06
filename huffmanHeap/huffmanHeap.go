@@ -6,15 +6,12 @@ import(
 )
 
 type Item struct {
-  node *tree.Node // Cada elemento da arvore
-  frequency int // Quantas vezes o char apareceu no texto
+  Node *tree.Node // Cada elemento da arvore
+  Frequency int // Quantas vezes o char apareceu no texto
 
   // O index eh necessario para atualizar a heap e eh mantido pelos metodos da interface
   index int
 }
-
-func (i Item) Node() *tree.Node{ return i.node }
-func (i Item) Frequency() int{ return i.frequency }
 
 
 // Vamos fazer uma fila de prioridade para pegar os elementos a serem adicionados na arvore
@@ -28,8 +25,8 @@ func New(freqMap map[string]int) huffmanHeap{
   //
   for value, frequency := range freqMap {
     item := &Item {
-           node: tree.New(value, nil, nil),
-           frequency: frequency,
+           Node: tree.New(value, nil, nil),
+           Frequency: frequency,
     }
     heap.Push(&hh, item)
   }
@@ -43,7 +40,7 @@ func (hh huffmanHeap) Len() int {
 
 func (hh huffmanHeap) Less(i, j int) bool {
   // Queremos que pop retorne o elemento de maior prioridade
-  return hh[i].frequency > hh[j].frequency
+  return hh[i].Frequency > hh[j].Frequency
 }
 
 // Nome auto explicativo, do ingles trocar
