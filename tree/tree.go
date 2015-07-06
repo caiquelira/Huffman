@@ -20,27 +20,26 @@ func (n *Node) isLeaf() bool {
 	return n.left == nil && n.right == nil
 }
 
+type pair struct{
+	depth int
+	node *Node
+}
+
 func (n *Node) String() (s string){
-	var queueN []*Node{ n }
-	var queueD []*int{ 0 }
+	queue := []pair{ pair{depth: 0, node: n,} }
+
 	for len(queue) > 0 {
 		// Tiramos o primeiro elemento e atualizamos a fila
-		firstN := queueN[0]
-		queueN := queueN[1:]
+		first := queue[0]
+		queue := queue[1:]
 
-		firstD := queueD[0]
-		queueD := queueD[1:]
-
-		for i := 0;  i < firstD; i++ {
+		for i := 0;  i < first.depth; i++ {
 			s += "  "
 		}
-		s += "\"" + firstN.value + "\"" + "\n"
-		if !firstN.isLeaf(){
-			queueN.append(firstN.left)
-			queueN.append(firstN.right)
-
-			queueD.append(firstD + 1)
-			queueD.append(firstD + 1)
+		s += "\"" + first.node.value + "\"" + "\n"
+		if !first.node.isLeaf(){
+			queue = append(queue, pair{depth: first.depth + 1, node: first.node.left})
+			queue = append(queue, pair{depth: first.depth + 1, node: first.node.right})
 		}
 	}
 	return
