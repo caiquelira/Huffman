@@ -59,7 +59,7 @@ func (bw *Writer) Write(in bool) {
 
 func (bw *Writer) WriteByte (b byte) {
 	for i := 0; i < 8; i++ {
-		bw.Write(bool ((b & (1<<uint(7 - i))) == 1))
+		bw.Write(bool ((b & (1<<uint(7 - i))) == (1<<uint(7 - i))))
 		b >>= 1
 	}
 }
