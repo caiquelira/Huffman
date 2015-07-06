@@ -75,8 +75,17 @@ func (br *reader) read()(b bool, e error) {
 func (br *Reader) Read()(b bool, e error) {
 	return br.b.read()
 }
+func reverseBits(b byte) byte {
+	var d byte
+	for b > 0 {
+		d |= b & 1
+		b >>= 1
+		d <<= 1
+	}
+	return d
+}
 
-func (br *Reader) ReadByte ()(b byte, e error) {
+func (br *Reader) ReadByte()(b byte, e error) {
 	e = nil
 	b = 0
 	for i := 0; i < 8; i++ {
@@ -87,8 +96,10 @@ func (br *Reader) ReadByte ()(b byte, e error) {
 			b++
 		}
 		if e != nil {
+			reverseBits(b)
 			return
 		}
 	}
+	reverseBits(b)
 	return
 }
