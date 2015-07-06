@@ -2,7 +2,8 @@ package huffman
 
 import ("github.com/caiquelira/huffman/tree"
 		"github.com/caiquelira/huffman/bit"
-		"os")
+		"os"
+		"fmt")
 
 //Método para escrever a arvore recursivamente
 func writeNode(node *tree.Node, writer *bit.Writer) {
@@ -29,7 +30,7 @@ func createDict(node *tree.Node, dict map[string]string, code string) {
 
 // Método para escrever o arquivo na forma codificada
 
-func writeCodified(file os.File, dict map[string]string, writer *bit.Writer){
+func writeCodified(file *os.File, dict map[string]string, writer *bit.Writer){
 	//Loop para ler um caracter e escreve-lo no arquivo de saida em forma codificada
 	for {
 		b, _ := file.Read(make([]byte, 1))
@@ -49,9 +50,9 @@ func writeCodified(file os.File, dict map[string]string, writer *bit.Writer){
 }
 
 //Recebe um arquivo de texto e cria um arquivo comprimido
-func Compress(file os.File, outputName string) {
+func Compress(file *os.File, outputName string) {
 	// gerar a arvore a partir da frequencia dos caracteres do texto
-	root := Harvest(GetMap(&file, 1))
+	root := Harvest(GetMap(file, 1))
 
 	// gerar dicionario
 	dict := make(map[string]string)
@@ -60,7 +61,8 @@ func Compress(file os.File, outputName string) {
 	//Resetar cursor
 	file.Seek(0, 0)
 	//Escrever Árvore
-	writer := bit.NewWriter(&file)
+	outputFile, _ := os.Create(outputName)
+	writer := bit.NewWriter(outputFile)
 	writeNode(root, writer)
 
 	// Codificar
@@ -107,9 +109,9 @@ func decodeFile(reader *bit.Reader, outputName string, root *tree.Node) {
 
 }
 //Recebe um arquivo comprimido (objeto) e retorna o arquivo original (objeto)
-func Decompress(file os.File, outputName string){
+func Decompress(file *os.File, outputName string){
 	// Ler Árvore (Reconstruir)
-	reader := bit.NewReader(&file)
+	reader := bit.NewReader(file)
 	root := readTree(reader)
 	if root == nil {
 		panic("Árvore nula!")
