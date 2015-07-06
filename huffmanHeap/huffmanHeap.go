@@ -40,7 +40,7 @@ func (hh huffmanHeap) Len() int {
 
 func (hh huffmanHeap) Less(i, j int) bool {
   // Queremos que pop retorne o elemento de maior prioridade
-  return hh[i].Frequency > hh[j].Frequency
+  return hh[i].Frequency < hh[j].Frequency
 }
 
 // Nome auto explicativo, do ingles trocar

@@ -3,7 +3,7 @@ package huffman
 import ("github.com/caiquelira/huffman/tree"
 		"github.com/caiquelira/huffman/bit"
 		"os"
-		"fmt")
+		"io")
 
 //Método para escrever a arvore recursivamente
 func writeNode(node *tree.Node, writer *bit.Writer) {
@@ -24,7 +24,7 @@ func createDict(node *tree.Node, dict map[string]string, code string) {
 		dict[node.Value] = code
 	} else {
 		createDict(node.Left, dict, code+"0")
-		createDict(node.Left, dict, code+"1")
+		createDict(node.Right, dict, code+"1")
 	}
 }
 
@@ -33,7 +33,11 @@ func createDict(node *tree.Node, dict map[string]string, code string) {
 func writeCodified(file *os.File, dict map[string]string, writer *bit.Writer){
 	//Loop para ler um caracter e escreve-lo no arquivo de saida em forma codificada
 	for {
-		b, _ := file.Read(make([]byte, 1))
+		b := make([]byte, 1)
+		_, err := file.Read(b)
+		if err == io.EOF {
+			break
+		}
 		//Transformar o caracter lido no código feito pelo dicionário
 		codeb := dict[string(b)]
 		//Temos que escrever bit a bit.
@@ -43,7 +47,6 @@ func writeCodified(file *os.File, dict map[string]string, writer *bit.Writer){
 			} else {
 				writer.Write(false)
 			}
-
 		}
 	}
 	writer.Close()
