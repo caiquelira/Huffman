@@ -77,7 +77,7 @@ func (br *Reader) Read()(b bool, e error) {
 }
 func reverseBits(b byte) byte {
 	var d byte
-	for b > 0 {
+	for i := 0; i < 8; i++ {
 		d |= b & 1
 		b >>= 1
 		d <<= 1
