@@ -4,8 +4,8 @@ import (
 	"io"
 )
 
-func GetMap(file io.Reader, readerSize int) {
-	// Dicionario que relaciona cada string com sua frequencia
+func GetMap(file io.Reader, readerSize int) map[string]int{
+	//Dicionario que relaciona cada string com sua frequencia
 	freqMap := make(map[string]int)
 	// Buffer para lermos 1 byte de cada vez
 	buf := make([]byte, readerSize)
@@ -25,4 +25,5 @@ func GetMap(file io.Reader, readerSize int) {
 		// ou adiciona um novo key do Dicionario
 		freqMap[str]++
 	}
+	return freqMap
 }
