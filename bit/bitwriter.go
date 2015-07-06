@@ -57,18 +57,8 @@ func (bw *Writer) Write(in bool) {
 	bw.b.write(in)
 }
 
-func reverseBits(b byte) byte {
-	var d byte
-	for i := 0; i < 8; i++ {
-		d |= b & 1
-		b >>= 1
-		d <<= 1
-	}
-	return d
-}
 
 func (bw *Writer) WriteByte (b byte) {
-	b = reverseBits(b)
 	for i := 0; i < 8; i++ {
 		bw.Write(bool ((b & 1) == 1))
 		b >>= 1
