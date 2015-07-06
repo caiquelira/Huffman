@@ -2,22 +2,22 @@ package tree
 
 // Definição do nó da árvore de Huffman
 type Node struct {
-	value string
-	left  *Node
-	right *Node
+	Value string
+	Left  *Node
+	Right *Node
 }
 
 func New(v string, l *Node, r *Node) *Node{
 	node := new(Node)
-	node.left = l
-	node.right = r
-	node.value = v
+	node.Left = l
+	node.Right = r
+	node.Value = v
 	return node
 }
 
 // Método que informa se um nó é uma folha
-func (n *Node) isLeaf() bool {
-	return n.left == nil && n.right == nil
+func (n *Node) IsLeaf() bool {
+	return n.Left == nil && n.Right == nil
 }
 
 type pair struct{
@@ -36,10 +36,10 @@ func (n *Node) String() (s string){
 		for i := 0;  i < first.depth; i++ {
 			s += "  "
 		}
-		s += "\"" + first.node.value + "\"" + "\n"
-		if !first.node.isLeaf(){
-			queue = append(queue, pair{depth: first.depth + 1, node: first.node.left})
-			queue = append(queue, pair{depth: first.depth + 1, node: first.node.right})
+		s += "\"" + first.node.Value + "\"" + "\n"
+		if !first.node.IsLeaf(){
+			queue = append(queue, pair{depth: first.depth + 1, node: first.node.Left})
+			queue = append(queue, pair{depth: first.depth + 1, node: first.node.Right})
 		}
 	}
 	return
