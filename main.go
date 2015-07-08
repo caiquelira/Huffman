@@ -1,14 +1,14 @@
 package main
 
 import (
-	"fmt"
-	"os"
 	"errors"
-	"strings"
+	"fmt"
 	"github.com/caiquelira/huffman"
+	"os"
+	"strings"
 )
 
-func main () {
+func main() {
 	// ler argumentos passados pela linha de comando
 	args := os.Args[1:]
 
@@ -61,7 +61,5 @@ func main () {
 		fmt.Printf("Decompressing file: %s ...\n", fileName)
 		huffman.Decompress(file, outputName)
 	}
-
-
 
 }
