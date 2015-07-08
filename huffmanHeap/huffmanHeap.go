@@ -22,7 +22,6 @@ func New(freqMap map[string]int) huffmanHeap{
   hh := make(huffmanHeap, 0)
   heap.Init(&hh)
 
-  //
   for value, frequency := range freqMap {
     item := &Item {
            Node: tree.New(value, nil, nil),
@@ -58,7 +57,7 @@ func (hh *huffmanHeap) Push(x interface{}) {
   *hh = append(*hh, item)
 }
 
-// Retorna a arvore do elemento com a maior prioridade ( primeiro da fila do Less())
+// Retorna o elemento com a menor frequencia
 func (hh *huffmanHeap) Pop() interface{} {
   old := *hh
   n := len(old)
