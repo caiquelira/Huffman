@@ -3,13 +3,21 @@ package huffman
 import ("github.com/caiquelira/huffman/tree"
 		"github.com/caiquelira/huffman/bit"
 		"os"
-		"io")
+		"io"
+		"fmt"
+		"bufio")
 
 //Método para escrever a arvore recursivamente
 func writeNode(node *tree.Node, writer *bit.Writer) {
 	if  node.IsLeaf() { // folha
 		writer.Write(true)
-		writer.WriteByte(([]byte(node.Value))[0])
+		//writer.WriteByte(([]byte(node.Value))[0])
+		runes := []rune(node.Value)
+
+		fmt.Print("w ")
+		fmt.Println(byte(runes[0]))
+
+		writer.WriteByte(byte(runes[0]))
 	} else { // tem dois filhos
 		writer.Write(false)
 		writeNode(node.Left, writer)
@@ -30,16 +38,22 @@ func createDict(node *tree.Node, dict map[string]string, code string) {
 
 // Método para escrever o arquivo na forma codificada
 
-func writeCodified(file *os.File, dict map[string]string, writer *bit.Writer){
+func writeCodified(fi io.Reader, dict map[string]string, writer *bit.Writer){
 	//Loop para ler um caracter e escreve-lo no arquivo de saida em forma codificada
+
+	file := bufio.NewReader(fi)
+
 	for {
-		b := make([]byte, 1)
-		_, err := file.Read(b)
+		//b := make([]byte, 1)
+		//_, err := file.Read(b)
+		r, _, err := file.ReadRune()
+
 		if err == io.EOF {
 			break
 		}
 		//Transformar o caracter lido no código feito pelo dicionário
-		codeb := dict[string(b)]
+		//codeb := dict[string(b)]
+		codeb := dict[string(r)]
 		//Temos que escrever bit a bit.
 		for i := 0; i < len(codeb); i++ {
 			if string(codeb[i]) == "1"{
@@ -55,7 +69,7 @@ func writeCodified(file *os.File, dict map[string]string, writer *bit.Writer){
 //Recebe um arquivo de texto e cria um arquivo comprimido
 func Compress(file *os.File, outputName string) {
 	// gerar a arvore a partir da frequencia dos caracteres do texto
-	root := Harvest(GetMap(file, 1))
+	root := Harvest(GetMap(file))
 
 	// gerar dicionario
 	dict := make(map[string]string)
@@ -94,8 +108,12 @@ func readTree(reader *bit.Reader) *tree.Node{
 	read, _ := reader.Read()
 	if read { // folha
 		char, _ := reader.ReadByte()
-		charstring := string(reverseBits(char))
-		return tree.New(charstring, nil, nil)
+		char = reverseBits(char)
+
+		fmt.Print("byte: ", char)
+		rune := rune(char)
+		fmt.Println("rune: ", rune)
+		return tree.New(string(rune), nil, nil)
 	} else { // tem dois filhos
 		leftChild := readTree(reader)
 		rightChild := readTree(reader)
@@ -120,6 +138,7 @@ func decodeFile(reader *bit.Reader, outputName string, root *tree.Node) {
 
 		//Checar se chegamos em uma folha
 		if node.IsLeaf() {
+
 			output.WriteString(node.Value)
 			node = root
 		}
