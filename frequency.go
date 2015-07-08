@@ -1,12 +1,12 @@
 package huffman
 
 import (
-	"io"
 	"bufio"
+	"io"
 	//"fmt"
 )
 
-func GetMap(fi io.Reader) map[string]int{
+func GetMap(fi io.Reader) map[string]int {
 	file := bufio.NewReader(fi)
 	//Dicionario que relaciona cada string com sua frequencia
 	freqMap := make(map[string]int)

@@ -1,15 +1,17 @@
 package huffman
 
-import ("github.com/caiquelira/huffman/tree"
-		"github.com/caiquelira/huffman/bit"
-		"os"
-		"io"
-		"fmt"
-		"bufio")
+import (
+	"bufio"
+	"fmt"
+	"github.com/caiquelira/huffman/bit"
+	"github.com/caiquelira/huffman/tree"
+	"io"
+	"os"
+)
 
 //Método para escrever a arvore recursivamente
 func writeNode(node *tree.Node, writer *bit.Writer) {
-	if  node.IsLeaf() { // folha
+	if node.IsLeaf() { // folha
 		writer.Write(true)
 		//writer.WriteByte(([]byte(node.Value))[0])
 		runes := []rune(node.Value)
@@ -38,7 +40,7 @@ func createDict(node *tree.Node, dict map[string]string, code string) {
 
 // Método para escrever o arquivo na forma codificada
 
-func writeCodified(fi io.Reader, dict map[string]string, writer *bit.Writer){
+func writeCodified(fi io.Reader, dict map[string]string, writer *bit.Writer) {
 	//Loop para ler um caracter e escreve-lo no arquivo de saida em forma codificada
 
 	file := bufio.NewReader(fi)
@@ -56,7 +58,7 @@ func writeCodified(fi io.Reader, dict map[string]string, writer *bit.Writer){
 		codeb := dict[string(r)]
 		//Temos que escrever bit a bit.
 		for i := 0; i < len(codeb); i++ {
-			if string(codeb[i]) == "1"{
+			if string(codeb[i]) == "1" {
 				writer.Write(true)
 			} else {
 				writer.Write(false)
@@ -75,7 +77,7 @@ func Compress(file *os.File, outputName string) {
 	dict := make(map[string]string)
 
 	if root.IsLeaf() {
-		dict[root.Value] = "0"	
+		dict[root.Value] = "0"
 	} else {
 		createDict(root, dict, "")
 	}
@@ -95,7 +97,7 @@ func Compress(file *os.File, outputName string) {
 //helper
 func reverseBits(b byte) byte {
 	var d byte
-	for i:= 0; i < 8; i++ {
+	for i := 0; i < 8; i++ {
 		d <<= 1
 		d |= b & 1
 		b >>= 1
@@ -104,7 +106,7 @@ func reverseBits(b byte) byte {
 }
 
 //Método para ler a arvore recursivamente
-func readTree(reader *bit.Reader) *tree.Node{
+func readTree(reader *bit.Reader) *tree.Node {
 	read, _ := reader.Read()
 	if read { // folha
 		char, _ := reader.ReadByte()
@@ -146,8 +148,9 @@ func decodeFile(reader *bit.Reader, outputName string, root *tree.Node) {
 	output.Close()
 
 }
+
 //Recebe um arquivo comprimido (objeto) e retorna o arquivo original (objeto)
-func Decompress(file *os.File, outputName string){
+func Decompress(file *os.File, outputName string) {
 	// Ler Árvore (Reconstruir)
 	reader := bit.NewReader(file)
 	root := readTree(reader)
@@ -162,4 +165,3 @@ func Decompress(file *os.File, outputName string){
 	}
 	decodeFile(reader, outputName, root)
 }
-
