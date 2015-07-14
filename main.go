@@ -1,14 +1,14 @@
 package main
 
 import (
-	"errors"
 	"fmt"
-	"github.com/caiquelira/huffman"
 	"os"
+	"errors"
 	"strings"
+	"github.com/caiquelira/huffman"
 )
 
-func main() {
+func main () {
 	// ler argumentos passados pela linha de comando
 	args := os.Args[1:]
 
@@ -43,7 +43,7 @@ func main() {
 		}
 
 		outputName := strings.TrimSuffix(fileName, ".txt") + ".ch"
-		fmt.Printf("Compressing file: %s", fileName)
+		fmt.Printf("Compressing file: %s\n", fileName)
 		huffman.Compress(file, outputName)
 	} else if args[0] == "decompress" {
 		if !strings.HasSuffix(args[1], ".ch") {
@@ -61,5 +61,7 @@ func main() {
 		fmt.Printf("Decompressing file: %s ...\n", fileName)
 		huffman.Decompress(file, outputName)
 	}
+
+
 
 }

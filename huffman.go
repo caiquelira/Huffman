@@ -2,7 +2,7 @@ package huffman
 
 import (
 	"bufio"
-	"fmt"
+	//"fmt"
 	"github.com/caiquelira/huffman/bit"
 	"github.com/caiquelira/huffman/tree"
 	"io"
@@ -16,8 +16,8 @@ func writeNode(node *tree.Node, writer *bit.Writer) {
 		//writer.WriteByte(([]byte(node.Value))[0])
 		runes := []rune(node.Value)
 
-		fmt.Print("w ")
-		fmt.Println(byte(runes[0]))
+		//fmt.Print("w ")
+		//fmt.Println(byte(runes[0]))
 
 		writer.WriteByte(byte(runes[0]))
 	} else { // tem dois filhos
@@ -112,9 +112,9 @@ func readTree(reader *bit.Reader) *tree.Node {
 		char, _ := reader.ReadByte()
 		char = reverseBits(char)
 
-		fmt.Print("byte: ", char)
+		//fmt.Print("byte: ", char)
 		rune := rune(char)
-		fmt.Println("rune: ", rune)
+		//fmt.Println("rune: ", rune)
 		return tree.New(string(rune), nil, nil)
 	} else { // tem dois filhos
 		leftChild := readTree(reader)
